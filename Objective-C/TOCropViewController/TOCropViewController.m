@@ -323,12 +323,17 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
         frame.size.width = CGRectGetWidth(bounds);
 
         // Set Y and adjust for height
-        if (self.toolbarPosition == TOCropViewControllerToolbarPositionBottom) {
-            frame.size.height -= (insets.bottom + kTOCropViewControllerToolbarHeight);
-        } else if (self.toolbarPosition == TOCropViewControllerToolbarPositionTop) {
-			frame.origin.y = kTOCropViewControllerToolbarHeight + insets.top;
-            frame.size.height -= frame.origin.y;
-        }
+        
+        // sony
+        // disable this code bcuz want bottom to edge of screen
+        //
+//        if (self.toolbarPosition == TOCropViewControllerToolbarPositionBottom) {
+//            frame.size.height -= (insets.bottom + kTOCropViewControllerToolbarHeight);
+//        } else if (self.toolbarPosition == TOCropViewControllerToolbarPositionTop) {
+//			frame.origin.y = kTOCropViewControllerToolbarHeight + insets.top;
+//            frame.size.height -= frame.origin.y;
+//        }
+
     }
     
     return frame;

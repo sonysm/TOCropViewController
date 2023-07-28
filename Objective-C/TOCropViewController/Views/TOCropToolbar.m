@@ -58,7 +58,8 @@
 
 - (void)setup {
     self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
-    self.backgroundView.backgroundColor = [UIColor colorWithWhite:0.12f alpha:1.0f];
+    // make clear bg //sony
+//    self.backgroundView.backgroundColor = [UIColor colorWithWhite:0.12f alpha:1.0f];
     [self addSubview:self.backgroundView];
     
     // On iOS 9, we can use the new layout features to determine whether we're in an 'Arabic' style language mode
@@ -165,9 +166,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
-    self.backgroundColor = UIColor.redColor;
-    
+        
     NSLayoutConstraint *xConstraint = [NSLayoutConstraint
                                           constraintWithItem:self.applyButton
                                           attribute:NSLayoutAttributeCenterX
