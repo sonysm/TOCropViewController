@@ -27,7 +27,7 @@
 #import "UIImage+CropRotate.h"
 #import "TOCroppedImageAttributes.h"
 
-static const CGFloat kTOCropViewControllerTitleTopPadding = 14.0f;
+static const CGFloat kTOCropViewControllerTitleTopPadding = 64.0f;
 static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 
 @interface TOCropViewController () <UIActionSheetDelegate, UIViewControllerTransitioningDelegate, TOCropViewDelegate>
@@ -43,6 +43,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 @property (nonatomic, strong, readwrite) TOCropView *cropView;
 @property (nonatomic, strong) UIView *toolbarSnapshotView;
 @property (nonatomic, strong, readwrite) UILabel *titleLabel;
+@property (nonatomic, strong, readwrite) UIButton *cancelButton;
 
 /* Transition animation controller */
 @property (nonatomic, copy) void (^prepareForTransitionHandler)(void);
@@ -134,6 +135,8 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     self.toolbar.clampButtonTapped = ^{ [weakSelf showAspectRatioDialog]; };
     self.toolbar.rotateCounterclockwiseButtonTapped = ^{ [weakSelf rotateCropViewCounterclockwise]; };
     self.toolbar.rotateClockwiseButtonTapped        = ^{ [weakSelf rotateCropViewClockwise]; };
+    
+    [self.cancelButton addTarget:self action:@selector(cancelButtonTapped) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -348,7 +351,8 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     }
 
     // Work out horizontal position
-    frame.origin.x = ceilf((viewWidth - frame.size.width) * 0.5f);
+    // 16.0f add more padding by #sony
+    frame.origin.x = ceilf((viewWidth - frame.size.width) * 0.5f) + 16.0f;
     if (!verticalLayout) { frame.origin.x += x; }
 
     // Work out vertical position
@@ -436,6 +440,8 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
+    
+    self.title = @"Hello world";
 
     self.cropView.frame = [self frameForCropViewWithVerticalLayout:self.verticalLayout];
     [self adjustCropViewInsets];
@@ -1033,7 +1039,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 
 - (void)setTitle:(NSString *)title
 {
-    [super setTitle:title];
+    [super setTitle: title];
 
     if (self.title.length == 0) {
         [_titleLabel removeFromSuperview];
@@ -1091,16 +1097,46 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     return _toolbar;
 }
 
+- (UIButton *)cancelButton
+{
+    if (_cancelButton) {return  _cancelButton;}
+    
+    _cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    if (@available(iOS 11.0, *)) {
+        _cancelButton.frame = CGRectMake(16, 64, 32, 32);
+    }
+//    _cancelButton.layer.cornerRadius = 22
+    
+    if (@available(iOS 13.0, *)) {
+        if (@available(iOS 15.0, *)) {
+            UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationWithHierarchicalColor:[UIColor whiteColor]];
+            UIImage *icon = [UIImage systemImageNamed:@"xmark" withConfiguration:config];
+            [_cancelButton setImage:icon forState:UIControlStateNormal];
+        }
+        
+        [_cancelButton setImageEdgeInsets: UIEdgeInsetsMake(8, 8, 8, 8)];
+        _cancelButton.layer.cornerRadius = 16;
+        [_cancelButton setBackgroundColor: [UIColor darkGrayColor]];
+        [_cancelButton setTintColor:[UIColor whiteColor]];
+    }
+    
+    [_cancelButton addTarget:self action:@selector(cancelButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_cancelButton];
+
+    return _cancelButton;
+}
+
+
 - (UILabel *)titleLabel
 {
     if (!self.title.length) { return nil; }
     if (_titleLabel) { return _titleLabel; }
 
     _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     _titleLabel.backgroundColor = [UIColor clearColor];
     _titleLabel.textColor = [UIColor whiteColor];
-    _titleLabel.numberOfLines = 1;
+    _titleLabel.numberOfLines = 3;
     _titleLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines;
     _titleLabel.clipsToBounds = YES;
     _titleLabel.textAlignment = NSTextAlignmentCenter;
