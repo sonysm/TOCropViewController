@@ -39,6 +39,8 @@
 
 @property (nonatomic, strong) UIButton *rotateButton; // defaults to counterclockwise button for legacy compatibility
 
+@property (nonatomic, strong) UIButton *applyButton; // defaults to counterclockwise button for legacy compatibility
+
 @property (nonatomic, assign) BOOL reverseContentLayout; // For languages like Arabic where they natively present content flipped from English
 
 @end
@@ -85,13 +87,13 @@
     }
     [_doneTextButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [_doneTextButton sizeToFit];
-    [self addSubview:_doneTextButton];
+//    [self addSubview:_doneTextButton];
     
     _doneIconButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_doneIconButton setImage:[TOCropToolbar doneImage] forState:UIControlStateNormal];
     [_doneIconButton setTintColor:[UIColor colorWithRed:1.0f green:0.8f blue:0.0f alpha:1.0f]];
     [_doneIconButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_doneIconButton];
+//    [self addSubview:_doneIconButton];
 
     // Set the default color for the done buttons
     self.doneButtonColor = nil;
@@ -107,7 +109,7 @@
     [_cancelTextButton.titleLabel setFont:[UIFont systemFontOfSize:17.0f]];
     [_cancelTextButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [_cancelTextButton sizeToFit];
-    [self addSubview:_cancelTextButton];
+//    [self addSubview:_cancelTextButton];
     
     _cancelIconButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_cancelIconButton setImage:[TOCropToolbar cancelImage] forState:UIControlStateNormal];
@@ -119,21 +121,21 @@
     _clampButton.tintColor = [UIColor whiteColor];
     [_clampButton setImage:[TOCropToolbar clampImage] forState:UIControlStateNormal];
     [_clampButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_clampButton];
+//    [self addSubview:_clampButton];
     
     _rotateCounterclockwiseButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _rotateCounterclockwiseButton.contentMode = UIViewContentModeCenter;
     _rotateCounterclockwiseButton.tintColor = [UIColor whiteColor];
     [_rotateCounterclockwiseButton setImage:[TOCropToolbar rotateCCWImage] forState:UIControlStateNormal];
     [_rotateCounterclockwiseButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_rotateCounterclockwiseButton];
+//    [self addSubview:_rotateCounterclockwiseButton];
     
     _rotateClockwiseButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _rotateClockwiseButton.contentMode = UIViewContentModeCenter;
     _rotateClockwiseButton.tintColor = [UIColor whiteColor];
     [_rotateClockwiseButton setImage:[TOCropToolbar rotateCWImage] forState:UIControlStateNormal];
     [_rotateClockwiseButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_rotateClockwiseButton];
+//    [self addSubview:_rotateClockwiseButton];
     
     _resetButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _resetButton.contentMode = UIViewContentModeCenter;
@@ -145,12 +147,66 @@
                                                                          @"TOCropViewControllerLocalizable",
                                                                          resourceBundle,
                                                                          nil);
-    [self addSubview:_resetButton];
+//    [self addSubview:_resetButton];
+    
+    _applyButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [_applyButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [_applyButton setTitle:@"Apply" forState:UIControlStateNormal];
+    [_applyButton.titleLabel setFont:[UIFont systemFontOfSize:17.0f]];
+    [_applyButton setTitleColor:[UIColor whiteColor] forState: UIControlStateNormal];
+    [_applyButton setBackgroundColor:[UIColor colorWithRed:0.086f green:0.29f blue:0.624f alpha:1]];
+    
+    [self addSubview:_applyButton];
+    
+    [self setShowOnlyIcons: false];
+    
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    
+    self.backgroundColor = UIColor.redColor;
+    
+    NSLayoutConstraint *xConstraint = [NSLayoutConstraint
+                                          constraintWithItem:self.applyButton
+                                          attribute:NSLayoutAttributeCenterX
+                                          relatedBy:NSLayoutRelationEqual
+                                          toItem:self
+                                          attribute:NSLayoutAttributeCenterX
+                                          multiplier:1.0
+                                          constant:0];
+    
+    NSLayoutConstraint *yConstraint = [NSLayoutConstraint
+                                          constraintWithItem:self.applyButton
+                                          attribute:NSLayoutAttributeCenterY
+                                          relatedBy:NSLayoutRelationEqual
+                                          toItem:self
+                                          attribute:NSLayoutAttributeCenterY
+                                          multiplier:1.0
+                                          constant:0];
+    
+    /* Fixed width */
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:self.applyButton
+                                                                       attribute:NSLayoutAttributeWidth
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:nil
+                                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                                      multiplier:1.0
+                                                                        constant:320];
+    /* Fixed Height */
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:self.applyButton
+                                                                        attribute:NSLayoutAttributeHeight
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:nil
+                                                                        attribute:NSLayoutAttributeNotAnAttribute
+                                                                       multiplier:1.0
+                                                                         constant:44];
+    
+    self.applyButton.translatesAutoresizingMaskIntoConstraints = false;
+
+    [self addConstraints:@[xConstraint, yConstraint, widthConstraint, heightConstraint]];
+
     
     BOOL verticalLayout = (CGRectGetWidth(self.bounds) < CGRectGetHeight(self.bounds));
     CGSize boundsSize = self.bounds.size;
@@ -319,7 +375,7 @@
         if (self.cancelButtonTapped)
             self.cancelButtonTapped();
     }
-    else if (button == self.doneTextButton || button == self.doneIconButton) {
+    else if (button == self.doneTextButton || button == self.doneIconButton || button == self.applyButton) {
         if (self.doneButtonTapped)
             self.doneButtonTapped();
     }

@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
  in portrait mode and the icon one, in landscape. */
 @property (nonatomic, strong, readonly) UIButton *doneTextButton;
 @property (nonatomic, strong, readonly) UIButton *doneIconButton;
+@property (nonatomic, strong, readonly) UIButton *applyButton;
 @property (nonatomic, copy) NSString *doneTextButtonTitle;
 @property (null_resettable, nonatomic, copy) UIColor *doneButtonColor;
 
