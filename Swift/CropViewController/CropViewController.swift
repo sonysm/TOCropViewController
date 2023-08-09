@@ -391,6 +391,15 @@ open class CropViewController: UIViewController, TOCropViewControllerDelegate {
     }
     
     /**
+     Title at the top of count Ex. "1 / 5"
+     */
+    public var countTitle: String! {
+        set { toCropViewController.countTitle = newValue }
+        get { return toCropViewController.countTitle }
+    }
+    
+    
+    /**
      Title for the 'Done' button.
      Setting this will override the Default which is a localized string for "Done".
      */

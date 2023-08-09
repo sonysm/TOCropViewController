@@ -44,6 +44,8 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 @property (nonatomic, strong) UIView *toolbarSnapshotView;
 @property (nonatomic, strong, readwrite) UILabel *titleLabel;
 @property (nonatomic, strong, readwrite) UIButton *cancelButton;
+@property (nonatomic, strong, readwrite) UILabel *countLabel;
+
 
 /* Transition animation controller */
 @property (nonatomic, copy) void (^prepareForTransitionHandler)(void);
@@ -137,6 +139,8 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     self.toolbar.rotateClockwiseButtonTapped        = ^{ [weakSelf rotateCropViewClockwise]; };
     
     [self.cancelButton addTarget:self action:@selector(cancelButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.countLabel setText: self.countTitle];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -368,9 +372,9 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
         frame.origin.y = self.statusBarHeight + kTOCropViewControllerTitleTopPadding;
     }
     
-    // 24 is padding right
+    // 48 is padding left, right
     // sony
-    frame.size.width -= 24.0f;
+    frame.size.width -= 48.0f;
 
     return frame;
 }
@@ -1102,6 +1106,21 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
         [self.view addSubview:_toolbar];
     }
     return _toolbar;
+}
+
+- (UILabel *)countLabel
+{
+    if (_countLabel) return _countLabel;
+    
+    _countLabel = [[UILabel alloc] init];
+    _countLabel.frame = CGRectMake(48, 64, UIScreen.mainScreen.bounds.size.width - 96, 32);
+    _countLabel.textAlignment = NSTextAlignmentCenter;
+    _countLabel.font = [UIFont systemFontOfSize: 17];
+    _countLabel.textColor = UIColor.whiteColor;
+    
+    [self.view addSubview:_countLabel];
+    
+    return  _countLabel;
 }
 
 - (UIButton *)cancelButton

@@ -175,6 +175,9 @@
  */
 @property (nullable, nonatomic, copy) NSString *cancelButtonTitle;
 
+// sony
+@property (nullable, nonatomic, copy) NSString *countTitle;
+
 /**
  If true, button icons are visible in portairt instead button text.
 
