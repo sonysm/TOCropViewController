@@ -1159,7 +1159,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     if (_titleLabel) { return _titleLabel; }
 
     _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    _titleLabel.font = [UIFont systemFontOfSize:15];
     _titleLabel.backgroundColor = [UIColor clearColor];
     _titleLabel.textColor = [UIColor whiteColor];
     _titleLabel.numberOfLines = 3;
