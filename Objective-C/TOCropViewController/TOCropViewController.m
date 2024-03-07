@@ -374,7 +374,8 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     
     // 48 is padding left, right
     // sony
-    frame.size.width -= 48.0f;
+    frame.size.width -= 40.0f;
+    frame.size.height += 15.0f;
 
     return frame;
 }
